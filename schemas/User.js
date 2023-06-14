@@ -12,34 +12,41 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  //   nickname: {
-  //     type: String,
-  //     required: true,
-  //     unique: true,
-  //   },
-  //   city: {
-  //     type: String,
-  //     required: true,
-  //   },
-  //   avatar: {
-  //     type: String,
-  //   },
-  //   points: {
-  //     type: Number,
-  //   },
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  avatar: {
+    type: String,
+  },
+  points: {
+    type: Number,
+  },
 });
 
 //creating custom static signup method
 
-userSchema.statics.signup = async function (email, password) {
+userSchema.statics.signup = async function (
+  email,
+  password,
+  username,
+  city,
+  avatar,
+  points
+) {
   //check if user already exists
   const exists = await this.findOne({ email });
 
   if (exists) {
     throw Error("Email already in use, please provide different one.");
   }
-  //make sure user filled in email and password
-  if (!email || !password) {
+  //make sure user filled in email and password and username
+  if (!email || !password || !username || !city) {
     throw Error("Please fill in all fields.");
   }
   //validate email
@@ -62,7 +69,14 @@ userSchema.statics.signup = async function (email, password) {
   const hash = await bcrypt.hash(password, salt);
 
   //create user in DB
-  const user = await this.create({ email, password: hash });
+  const user = await this.create({
+    email,
+    password: hash,
+    username,
+    city,
+    avatar,
+    points,
+  });
 
   return user;
 };
