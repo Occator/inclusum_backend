@@ -4,11 +4,10 @@ const app = express();
 const cors = require("cors");
 const connectDB = require("./dbinit");
 
-const userRoutes = require("./routes/user");
-
 const PORT = process.env.PORT || 8080;
 
 connectDB();
+const userRoutes = require("./routes/user");
 
 // middlewares
 
