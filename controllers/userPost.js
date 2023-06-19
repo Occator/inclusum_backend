@@ -3,7 +3,7 @@ const userPost = require("../schemas/UserPost");
 
 const getAllUserPosts = async (req, res) => {
   try {
-    const user_id = req.user_id;
+    const user_id = req.user._id;
     const posts = await userPost.find({ user_id });
     if (!posts.length) {
       return res.this.status(200).json({ msg: "no posts found" });
@@ -27,7 +27,7 @@ const createUserPost = async (req, res) => {
     return res.status(400).json({ error: "Please fill in all fields" });
   }
   try {
-    const user_id = req.user_id;
+    const user_id = req.user._id;
     const post = await userPost.create({ title, text, user_id });
     res.status(200).json(post);
   } catch (error) {
@@ -52,7 +52,7 @@ const createUserPostWithImg = async (req, res) => {
     return res.status(400).json({ error: "Please fill in all fields" });
   }
   try {
-    const user_id = req.user_id;
+    const user_id = req.user._id;
     const post = await userPost.create({ title, text, user_id, image });
     res.status(200).json(post);
   } catch (error) {
