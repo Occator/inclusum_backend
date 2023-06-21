@@ -36,36 +36,6 @@ const signupUser = async (req, res) => {
   }
 };
 
-//Get the picture
-
-const getAvatar = async (req, res) => {
-  try {
-    const avatar = User.find();
-    return res.status(200).json({avatar});
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({error});
-  }
-};
-
-const uploadAvatar = async (req, res) => {
-  try {
-    if (req.file && req.file.path) {
-      const image = new Image({
-        description: req.body.desc,
-        url: req.file.path
-      });
-      await image.save()
-      return res.status(200).json({msg: "image successfully saved"})
-    } else {
-      console.log(req.file);
-      return res.status(422).json({error: "invalid format"})
-    }
-  } catch (error) {
-    return res.status(500).json({error});
-  }
-}
-
 const updateUser = async (req, res) => {
   try {
     const {_id, avatar, city} = req.body;
@@ -91,4 +61,4 @@ const updateUser = async (req, res) => {
   }
 }
 
-module.exports = { loginUser, signupUser, getAvatar, uploadAvatar, updateUser};
+module.exports = { loginUser, signupUser, updateUser};
