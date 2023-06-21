@@ -36,4 +36,29 @@ const signupUser = async (req, res) => {
   }
 };
 
-module.exports = { loginUser, signupUser };
+const updateUser = async (req, res) => {
+  try {
+    const {_id, avatar, city} = req.body;
+    const user = await User.findByIdAndUpdate(_id,
+    {
+      avatar,
+      city
+    },
+    {
+      new: true,
+    }
+  );
+
+  if(!user) {
+    res.status(404).json({msg: "Cannot find the user"})
+  } else {
+    res.status(200).json({msg: "User updated successfully", data: user})
+  }
+  } catch (error) {
+    res.status(500).json({
+      error,
+    });
+  }
+}
+
+module.exports = { loginUser, signupUser, updateUser};
