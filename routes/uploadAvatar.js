@@ -5,6 +5,6 @@ const { uploadAvatarImage, getAvatar } = require("../controllers/uploadAvatar");
 
 const app = express.Router();
 app.get('/getavatar', getAvatar);
-app.post('/uploadavatar', uploadAvatarImage);
+app.post('/uploadavatar', upload.single("picture"), uploadAvatarImage);
 
 module.exports = app;

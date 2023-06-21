@@ -1,4 +1,4 @@
-const uploadAvatar = require('../schemas/UploadAvatar');
+const UploadAvatar = require('../schemas/UploadAvatar');
 
 const getAvatar = async (req, res) => {
     try {
@@ -13,10 +13,9 @@ const getAvatar = async (req, res) => {
 const uploadAvatarImage = async (req, res) => {
     try {
     if (req.file && req.file.path) {
-    const user_id = req.user._id;
-    const image = new Image({
+    const image = new UploadAvatar({
         url: req.file.path, 
-        user_id: user_id
+        user_id: req.body.user_id
     });
     await image.save()
     return res.status(200).json({msg: "image successfully saved"})

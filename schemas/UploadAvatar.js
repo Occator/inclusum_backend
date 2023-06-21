@@ -5,8 +5,7 @@ const uploadAvatarSchema = new mongoose.Schema({
     type: String,
     },
     user_id: {
-        type: String,
-        required: true,
+    type: String,
     },
 });
 
