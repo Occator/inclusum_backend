@@ -15,7 +15,7 @@ const getAllUserPosts = async (req, res) => {
 };
 
 const createUserPost = async (req, res) => {
-  const { title, text } = req.body;
+  const { title, text, timestamp } = req.body;
   let emptyFields = [];
   if (!title) {
     emptyFields.push("title");
@@ -28,7 +28,7 @@ const createUserPost = async (req, res) => {
   }
   try {
     const user_id = req.user._id;
-    const post = await userPost.create({ title, text, user_id });
+    const post = await userPost.create({ title, text, user_id, timestamp });
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json({ error: error.message });
