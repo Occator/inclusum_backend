@@ -2,7 +2,6 @@ const jwt = require("jsonwebtoken");
 const User = require("../schemas/User");
 
 const requireAuth = async (req, res, next) => {
-  console.log(req.headers);
   const { authorization } = req.headers;
   if (!authorization) {
     return res.status(401).json({ error: "You are not authorized" });

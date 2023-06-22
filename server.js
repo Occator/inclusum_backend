@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 8080;
 connectDB();
 const userRoutes = require("./routes/user");
 const userPostRoutes = require("./routes/userPost");
-const uploadAvatarRoutes = require('./routes/uploadAvatar');
+const uploadAvatarRoutes = require("./routes/uploadAvatar");
 
 // middlewares
 
