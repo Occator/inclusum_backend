@@ -12,6 +12,10 @@ const userPostSchema = new mongoose.Schema({
   image: {
     type: String,
   },
+  timestamp: {
+    type: String,
+    required: true,
+  },
   user_id: {
     type: String,
     required: true,
