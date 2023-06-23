@@ -9,9 +9,6 @@ const userPostSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  image: {
-    type: String,
-  },
   timestamp: {
     type: String,
     required: true,
@@ -19,6 +16,9 @@ const userPostSchema = new mongoose.Schema({
   user_id: {
     type: String,
     required: true,
+  },
+  imageURL: {
+    type: String,
   },
 });
 
