@@ -1,4 +1,3 @@
-const { json } = require("express");
 const userPost = require("../schemas/UserPost");
 
 const getAllUserPosts = async (req, res) => {
@@ -15,49 +14,40 @@ const getAllUserPosts = async (req, res) => {
 };
 
 const createUserPost = async (req, res) => {
-  const { title, text, timestamp } = req.body;
+  const { title, text, timestamp} = req.body;
+  const user_id = req.user._id;
   let emptyFields = [];
-  if (!title) {
-    emptyFields.push("title");
-  }
-  if (!text) {
-    emptyFields.push("text");
-  }
-  if (emptyFields.length > 0) {
-    return res.status(400).json({ error: "Please fill in all fields" });
-  }
-  try {
-    const user_id = req.user._id;
-    const post = await userPost.create({ title, text, user_id, timestamp });
-    res.status(200).json(post);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
+      if (!title) {
+        emptyFields.push("title");
+      }
+      if (!text) {
+        emptyFields.push("text");
+      }
+      if (emptyFields.length > 0) {
+        return res.status(400).json({ error: "Please fill in all fields" });
+      }
+      if (req.file && req.file.path) {
+        try {
+          const post = new userPost({
+            imageURL: req.file.path,
+            user_id: user_id,
+            title: title,
+            text: text,
+            timestamp: timestamp, 
+          });
+          await post.save();
+          return res.status(200).json({ msg: "post successfully created" });
+        } catch (error) {
+          return res.status(500).json({ error });
+        }
+      } else {
+        try {
+          const post = await userPost.create({ title, text, user_id, timestamp});
+          res.status(200).json(post);
+        } catch (error) {
+          res.status(500).json({ error: error.message });
+        }
+      }
 };
 
-// to create a user post with an image
-const createUserPostWithImg = async (req, res) => {
-  const { title, text, image } = req.body;
-  let emptyFields = [];
-  if (!title) {
-    emptyFields.push("title");
-  }
-  if (!text) {
-    emptyFields.push("text");
-  }
-  if (!image) {
-    emptyFields.push("no image to display");
-  }
-  if (emptyFields.length > 0) {
-    return res.status(400).json({ error: "Please fill in all fields" });
-  }
-  try {
-    const user_id = req.user._id;
-    const post = await userPost.create({ title, text, user_id, image });
-    res.status(200).json(post);
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-module.exports = { getAllUserPosts, createUserPost, createUserPostWithImg };
+module.exports = { getAllUserPosts, createUserPost };
