@@ -36,14 +36,14 @@ const createUserPost = async (req, res) => {
             timestamp: timestamp, 
           });
           await post.save();
-          return res.status(200).json({ msg: "post successfully created" });
+          return res.status(200).json({ msg: "post successfully created",  data: post});
         } catch (error) {
           return res.status(500).json({ error });
         }
       } else {
         try {
           const post = await userPost.create({ title, text, user_id, timestamp});
-          res.status(200).json(post);
+          res.status(200).json({ msg: "post successfully created", data: post});
         } catch (error) {
           res.status(500).json({ error: error.message });
         }
