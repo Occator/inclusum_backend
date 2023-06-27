@@ -10,7 +10,7 @@ connectDB();
 const userRoutes = require("./routes/user");
 const userPostRoutes = require("./routes/userPost");
 const uploadAvatarRoutes = require("./routes/uploadAvatar");
-
+const dbStationRoutes = require("./routes/dbStation");
 // middlewares
 
 app.use(cors());
@@ -20,6 +20,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoutes);
 app.use("/posts", userPostRoutes);
 app.use("/avatar", uploadAvatarRoutes);
+app.use("/station", dbStationRoutes);
 
 app.get("/", (req, res) => {
   res.send("Welcome to Inclusum API");
