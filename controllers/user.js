@@ -9,7 +9,7 @@ const getOneUser = async (req, res) => {
   console.log(req.params);
   try {
     const { _id } = req.params;
-    const user = await User.findOne({ _id });
+    const user = await User.findById(_id).select("avatar city email points username _id");
     if (!user) {
       res.status(400).json({ error: error.message });
     } else {
