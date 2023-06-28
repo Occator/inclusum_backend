@@ -14,5 +14,6 @@ app.post("/login", loginUser);
 app.post("/signup", signupUser);
 app.put("/updateuser", updateUser);
 app.get("/getallusers", getAllUsers);
+app.get("/:_id", getOneUser);
 
 module.exports = app;
