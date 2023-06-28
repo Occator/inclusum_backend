@@ -7,9 +7,6 @@ const dbStationSchema = new mongoose.Schema({
   stationNumber: {
     type: Number,
   },
-  description: {
-    type: String,
-  },
   geocoordX: {
     type: Number,
   },
