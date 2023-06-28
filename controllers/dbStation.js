@@ -1,24 +1,5 @@
 const dbStation = require("../schemas/DBStation");
 
-// create new single DB API-Post
-
-const createDBStation = async (req, res) => {
-  try {
-    const { stationName, stationNumber, description, geocoordX, geocoordY } =
-      req.body;
-    const station = await dbStation.create({
-      stationName,
-      stationNumber,
-      description,
-      geocoordX,
-      geocoordY,
-    });
-    res.status(201).json({ data: station });
-  } catch (error) {
-    res.status(500).json({ error });
-  }
-};
-
 // get single train station name
 const getOneStation = async (req, res) => {
   console.log("req.params", req.params);
@@ -36,4 +17,4 @@ const getOneStation = async (req, res) => {
   }
 };
 
-module.exports = { createDBStation, getOneStation };
+module.exports = { getOneStation };
