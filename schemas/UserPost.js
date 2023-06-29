@@ -20,6 +20,9 @@ const userPostSchema = new mongoose.Schema({
   imageURL: {
     type: String,
   },
+  city: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("userPost", userPostSchema);
