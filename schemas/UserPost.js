@@ -23,6 +23,12 @@ const userPostSchema = new mongoose.Schema({
   city: {
     type: String,
   },
+  avatar: {
+    type: String,
+  },
+  username: {
+    type: String,
+  },
 });
 
 module.exports = mongoose.model("userPost", userPostSchema);

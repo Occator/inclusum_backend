@@ -27,7 +27,7 @@ const getAllCityPosts = async (req, res) => {
 };
 
 const createUserPost = async (req, res) => {
-  const { title, text, timestamp, city } = req.body;
+  const { title, text, timestamp, city, username, avatar } = req.body;
   const user_id = req.user._id;
   let emptyFields = [];
   if (!title) {
@@ -48,6 +48,8 @@ const createUserPost = async (req, res) => {
         text: text,
         timestamp: timestamp,
         city: city,
+        username: username,
+        avatar: avatar,
       });
       await post.save();
       return res
@@ -64,6 +66,8 @@ const createUserPost = async (req, res) => {
         user_id,
         timestamp,
         city,
+        username,
+        avatar,
       });
       res.status(200).json({ msg: "post successfully created", data: post });
     } catch (error) {
