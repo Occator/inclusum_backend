@@ -6,7 +6,6 @@ const {
 } = require("../controllers/dbStation");
 
 const app = express.Router();
-
 app
   .get("/alltrainstations", getAllTrainStations)
   .get("/:stationNumber", getOneStation);
