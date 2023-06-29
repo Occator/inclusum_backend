@@ -7,7 +7,8 @@ const {
 
 const app = express.Router();
 
-app.get("/:stationNumber", getOneStation);
-app.get("/allTrainStations", getAllTrainStations);
+app
+  .get("/alltrainstations", getAllTrainStations)
+  .get("/:stationNumber", getOneStation);
 
 module.exports = app;
