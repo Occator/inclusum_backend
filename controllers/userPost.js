@@ -5,7 +5,7 @@ const getAllUserPosts = async (req, res) => {
     const user_id = req.user._id;
     const posts = await userPost.find({ user_id });
     if (!posts.length) {
-      return res.this.status(200).json({ msg: "no posts found" });
+      return res.status(200).json({ msg: "no posts found" });
     }
     res.status(200).json(posts);
   } catch (error) {
@@ -18,7 +18,7 @@ const getAllCityPosts = async (req, res) => {
     const user_city = req.user.city;
     const posts = await userPost.find({ city: user_city });
     if (!posts.length) {
-      return res.this.status(200).json({ msg: "no malfunction info found" });
+      return res.status(200).json({ msg: "no malfunction info found" });
     }
     res.status(200).json(posts);
   } catch (error) {
