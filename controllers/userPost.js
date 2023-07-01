@@ -76,4 +76,25 @@ const createUserPost = async (req, res) => {
   }
 };
 
-module.exports = { getAllUserPosts, createUserPost, getAllCityPosts };
+const deleteSingleUserPost = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const post = await userPost.findByIdAndDelete(_id);
+    if (!post) {
+      res.status(404).json({ msg: "I can't find a post with such _id" });
+    } else {
+      res
+        .status(200)
+        .json({ msg: "User post successfully deleted", data: post });
+    }
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+module.exports = {
+  getAllUserPosts,
+  createUserPost,
+  getAllCityPosts,
+  deleteSingleUserPost,
+};
