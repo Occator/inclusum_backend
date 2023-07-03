@@ -29,6 +29,12 @@ const userPostSchema = new mongoose.Schema({
   username: {
     type: String,
   },
+  likes: {
+    type: Number,
+  },
+  dislikes: {
+    type: Number,
+  },
 });
 
 module.exports = mongoose.model("userPost", userPostSchema);

@@ -27,7 +27,8 @@ const getAllCityPosts = async (req, res) => {
 };
 
 const createUserPost = async (req, res) => {
-  const { title, text, timestamp, city, username, avatar } = req.body;
+  const { title, text, timestamp, city, username, avatar, likes, dislikes } =
+    req.body;
   const user_id = req.user._id;
   let emptyFields = [];
   if (!title) {
@@ -50,6 +51,8 @@ const createUserPost = async (req, res) => {
         city: city,
         username: username,
         avatar: avatar,
+        likes: likes,
+        dislikes: dislikes,
       });
       await post.save();
       return res
@@ -68,6 +71,8 @@ const createUserPost = async (req, res) => {
         city,
         username,
         avatar,
+        likes,
+        dislikes,
       });
       res.status(200).json({ msg: "post successfully created", data: post });
     } catch (error) {
@@ -92,9 +97,39 @@ const deleteSingleUserPost = async (req, res) => {
   }
 };
 
+const updateLikes = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    await userPost.findByIdAndUpdate(
+      _id,
+      { $inc: { likes: 1 } },
+      { new: true }
+    );
+    res.status(200).json({ msg: "Likes successfully updated" });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+const updateDislikes = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    await userPost.findByIdAndUpdate(
+      _id,
+      { $inc: { dislikes: 1 } },
+      { new: true }
+    );
+    res.status(200).json({ msg: "Dislikes successfully updated" });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
 module.exports = {
   getAllUserPosts,
   createUserPost,
   getAllCityPosts,
   deleteSingleUserPost,
+  updateLikes,
+  updateDislikes,
 };
