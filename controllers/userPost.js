@@ -51,6 +51,8 @@ const createUserPost = async (req, res) => {
         city: city,
         username: username,
         avatar: avatar,
+        likes: likes,
+        dislikes: dislikes,
       });
       await post.save();
       return res
