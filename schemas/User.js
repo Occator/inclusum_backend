@@ -27,6 +27,10 @@ const userSchema = new mongoose.Schema({
   points: {
     type: Number,
   },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 //creating custom static signup method
@@ -37,7 +41,8 @@ userSchema.statics.signup = async function (
   username,
   city,
   avatar,
-  points
+  points,
+  verified
 ) {
   //check if user already exists
   const exists = await this.findOne({ email });
@@ -60,10 +65,6 @@ userSchema.statics.signup = async function (
     );
   }
 
-  //validate nickname
-
-  //validate city
-
   //encrypt password
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
@@ -76,6 +77,7 @@ userSchema.statics.signup = async function (
     city,
     avatar,
     points,
+    verified,
   });
 
   return user;
