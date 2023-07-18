@@ -8,7 +8,7 @@ const sendEmail = (email, subject, text) => {
       debug: true,
       auth: {
         user: "inclusum2023@gmail.com",
-        pass: process.env.PASSWORD,
+        pass: process.env.NODEMAILER_PASSWORD,
       },
     });
 
