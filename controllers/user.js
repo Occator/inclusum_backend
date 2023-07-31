@@ -65,17 +65,20 @@ const signupUser = async (req, res) => {
       points,
       verified
     );
-    const token = createToken(user._id, user.username);
+
     // res.status(200).json({ email, token });
     const verificationToken = await new Token({
       user_id: user._id,
       token: crypto.randomBytes(32).toString("hex"),
     }).save();
-    const verificationURL = `http://localhost:8080/user/${user._id}/verify/${verificationToken.token}`;
+    const verificationURL = `http://localhost:3000/user/${user._id}/verify/${verificationToken.token}`;
     sendEmail(user.email, "Verify Email", verificationURL);
-    res
-      .status(201)
-      .send({ msg: "An Email has been sent to your account, please verify." });
+    if (verificationToken && token) {
+      res.status(201).json({
+        token,
+        msg: "An Email has been sent to your account, please verify.",
+      });
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
@@ -83,24 +86,25 @@ const signupUser = async (req, res) => {
 
 //users email verification
 const verifyUser = async (req, res) => {
-  const { _id, token } = req.params;
+  const token = createToken(user._id, user.username);
+  const { _id, verifytoken } = req.params;
   try {
     const user = await User.findById(_id);
-    //console.log("user_id", user._id);
+    console.log("user_id", user._id);
     if (!user) {
       return res.status(400).send({ msg: "Invalid link." });
     }
     const verificationToken = await Token.findOne({
       user_id: user._id,
-      token: token,
+      token: verifytoken,
     });
     console.log("verificationToken", verificationToken);
     if (!verificationToken) {
       return res.status(400).send({ msg: "invalid link" });
     }
     await User.findByIdAndUpdate(_id, { verified: true }, { new: true });
-    await verificationToken.deleteOne({ token: token });
-    return res.status(200).send({ msg: "Email verified successfully" });
+    await verificationToken.deleteOne({ token: verifytoken });
+    res.status(200).send({ msg: "Email verified successfully" });
   } catch (error) {
     res.status(500).send({ msg: "Internal Server Error" });
   }
