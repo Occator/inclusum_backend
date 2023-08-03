@@ -112,13 +112,11 @@ userSchema.statics.login = async function (email, password) {
         user_id: user._id,
         token: crypto.randomBytes(32).toString("hex"),
       }).save();
-      const verificationURL = `http://localhost:8080/user/${user._id}/verify/${verificationToken.token}`;
+      const verificationURL = `https://inclusum.onrender.com/user/${user._id}/verify/${verificationToken.token}`;
       sendEmail(user.email, "Verify Email", verificationURL);
-      res
-        .status(201)
-        .send({
-          msg: "An Email has been sent to your account, please verify.",
-        });
+      res.status(201).send({
+        msg: "An Email has been sent to your account, please verify.",
+      });
     }
     return res
       .status(400)

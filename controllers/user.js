@@ -66,16 +66,18 @@ const signupUser = async (req, res) => {
       verified
     );
 
-    // res.status(200).json({ email, token });
     const verificationToken = await new Token({
       user_id: user._id,
       token: crypto.randomBytes(32).toString("hex"),
     }).save();
-    const verificationURL = `http://localhost:3000/user/${user._id}/verify/${verificationToken.token}`;
-    sendEmail(user.email, "Verify Email", verificationURL);
-    if (verificationToken && token) {
+    const verificationURL = `https://inclusum.netlify.app/user/${user._id}/verify/${verificationToken.token}`;
+    sendEmail(
+      user.email,
+      "Verify Email",
+      `Please click the link to verify your account: \n\n${verificationURL} \n\n Your Inclusum team`
+    );
+    if (verificationToken) {
       res.status(201).json({
-        token,
         msg: "An Email has been sent to your account, please verify.",
       });
     }
@@ -86,7 +88,7 @@ const signupUser = async (req, res) => {
 
 //users email verification
 const verifyUser = async (req, res) => {
-  const token = createToken(user._id, user.username);
+  console.log("req.params", req.params);
   const { _id, verifytoken } = req.params;
   try {
     const user = await User.findById(_id);
@@ -103,7 +105,7 @@ const verifyUser = async (req, res) => {
       return res.status(400).send({ msg: "invalid link" });
     }
     await User.findByIdAndUpdate(_id, { verified: true }, { new: true });
-    await verificationToken.deleteOne({ token: verifytoken });
+    await verificationToken.deleteOne({ token: token });
     res.status(200).send({ msg: "Email verified successfully" });
   } catch (error) {
     res.status(500).send({ msg: "Internal Server Error" });
