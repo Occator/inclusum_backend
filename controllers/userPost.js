@@ -97,29 +97,61 @@ const deleteSingleUserPost = async (req, res) => {
   }
 };
 
-const updateLikes = async (req, res) => {
+const addLike = async (req, res) => {
   try {
     const { _id } = req.params;
+    const {user_id} = req.body
     await userPost.findByIdAndUpdate(
       _id,
-      { $inc: { likes: 1 } },
+      { $push: { likes: user_id } },
       { new: true }
     );
-    res.status(200).json({ msg: "Likes successfully updated" });
+    res.status(200).json({ msg: "Likes successfully added" });
   } catch (error) {
     res.status(500).json({ error });
   }
 };
 
-const updateDislikes = async (req, res) => {
+const deleteLike = async (req, res) => {
   try {
     const { _id } = req.params;
+    const {user_id} = req.body
     await userPost.findByIdAndUpdate(
       _id,
-      { $inc: { dislikes: 1 } },
+      { $pull: { likes: user_id } },
       { new: true }
     );
-    res.status(200).json({ msg: "Dislikes successfully updated" });
+    res.status(200).json({ msg: "Likes successfully deleted" });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+const addDislike = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const {user_id} = req.body
+    await userPost.findByIdAndUpdate(
+      _id,
+      { $push: { dislikes: user_id } },
+      { new: true }
+    );
+    res.status(200).json({ msg: "Dislikes successfully added" });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+const deleteDislike = async (req, res) => {
+  try {
+    const { _id } = req.params;
+    const {user_id} = req.body
+    await userPost.findByIdAndUpdate(
+      _id,
+      { $pull: { dislikes: user_id } },
+      { new: true }
+    );
+    res.status(200).json({ msg: "Dislikes successfully deleted" });
   } catch (error) {
     res.status(500).json({ error });
   }
@@ -130,6 +162,8 @@ module.exports = {
   createUserPost,
   getAllCityPosts,
   deleteSingleUserPost,
-  updateLikes,
-  updateDislikes,
+  addLike,
+  addDislike,
+  deleteLike,
+  deleteDislike,
 };
