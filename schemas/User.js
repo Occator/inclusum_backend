@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
+const Token = require("../schemas/Token");
+const sendEmail = require("../services/sendEmail");
+const crypto = require("crypto");
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -27,6 +30,10 @@ const userSchema = new mongoose.Schema({
   points: {
     type: Number,
   },
+  verified: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 //creating custom static signup method
@@ -37,7 +44,8 @@ userSchema.statics.signup = async function (
   username,
   city,
   avatar,
-  points
+  points,
+  verified
 ) {
   //check if user already exists
   const exists = await this.findOne({ email });
@@ -60,10 +68,6 @@ userSchema.statics.signup = async function (
     );
   }
 
-  //validate nickname
-
-  //validate city
-
   //encrypt password
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
@@ -76,6 +80,7 @@ userSchema.statics.signup = async function (
     city,
     avatar,
     points,
+    verified,
   });
 
   return user;
@@ -98,6 +103,24 @@ userSchema.statics.login = async function (email, password) {
 
   if (!match) {
     throw Error("Incorrect password");
+  }
+
+  if (!user.verified) {
+    let verificationToken = await Token.findOne({ user_id: user._id });
+    if (!verificationToken) {
+      const verificationToken = await new Token({
+        user_id: user._id,
+        token: crypto.randomBytes(32).toString("hex"),
+      }).save();
+      const verificationURL = `https://inclusum.onrender.com/user/${user._id}/verify/${verificationToken.token}`;
+      sendEmail(user.email, "Verify Email", verificationURL);
+      res.status(201).send({
+        msg: "An Email has been sent to your account, please verify.",
+      });
+    }
+    return res
+      .status(400)
+      .send({ msg: "An Email has been sent to your account, please verify." });
   }
 
   return user;

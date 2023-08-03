@@ -1,5 +1,8 @@
 const User = require("../schemas/User");
 const jwt = require("jsonwebtoken");
+const Token = require("../schemas/Token");
+const sendEmail = require("../services/sendEmail");
+const crypto = require("crypto");
 
 const createToken = (_id, name) => {
   return jwt.sign({ _id, name }, process.env.SECRET, { expiresIn: "1d" });
@@ -47,10 +50,11 @@ const loginUser = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-//user sign up
 
+//user sign up
 const signupUser = async (req, res) => {
-  const { email, password, username, city, avatar, points } = req.body;
+  const { email, password, username, city, avatar, points, verified } =
+    req.body;
   try {
     const user = await User.signup(
       email,
@@ -58,12 +62,53 @@ const signupUser = async (req, res) => {
       username,
       city,
       avatar,
-      points
+      points,
+      verified
     );
-    const token = createToken(user._id, user.username);
-    res.status(200).json({ email, token });
+
+    const verificationToken = await new Token({
+      user_id: user._id,
+      token: crypto.randomBytes(32).toString("hex"),
+    }).save();
+    const verificationURL = `https://inclusum.netlify.app/user/${user._id}/verify/${verificationToken.token}`;
+    sendEmail(
+      user.email,
+      "Verify Email",
+      `Please click the link to verify your account: \n\n${verificationURL} \n\n Your Inclusum team`
+    );
+    if (verificationToken) {
+      res.status(201).json({
+        msg: "An Email has been sent to your account, please verify.",
+      });
+    }
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+//users email verification
+const verifyUser = async (req, res) => {
+  console.log("req.params", req.params);
+  const { _id, verifytoken } = req.params;
+  try {
+    const user = await User.findById(_id);
+    console.log("user_id", user._id);
+    if (!user) {
+      return res.status(400).send({ msg: "Invalid link." });
+    }
+    const verificationToken = await Token.findOne({
+      user_id: user._id,
+      token: verifytoken,
+    });
+    console.log("verificationToken", verificationToken);
+    if (!verificationToken) {
+      return res.status(400).send({ msg: "invalid link" });
+    }
+    await User.findByIdAndUpdate(_id, { verified: true }, { new: true });
+    await verificationToken.deleteOne({ token: token });
+    res.status(200).send({ msg: "Email verified successfully" });
+  } catch (error) {
+    res.status(500).send({ msg: "Internal Server Error" });
   }
 };
 
@@ -93,4 +138,11 @@ const updateUser = async (req, res) => {
   }
 };
 
-module.exports = { loginUser, signupUser, updateUser, getOneUser, getAllUsers };
+module.exports = {
+  loginUser,
+  signupUser,
+  updateUser,
+  getOneUser,
+  getAllUsers,
+  verifyUser,
+};
