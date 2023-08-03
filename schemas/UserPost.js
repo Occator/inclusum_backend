@@ -30,10 +30,10 @@ const userPostSchema = new mongoose.Schema({
     type: String,
   },
   likes: {
-    type: Number,
+    type: Array,
   },
   dislikes: {
-    type: Number,
+    type: Array,
   },
 });
 
